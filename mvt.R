@@ -9,7 +9,7 @@ library(purrr)
 sourceCpp("pbf2geojsonWrapper.cpp")
 
 tileinfo<-function(x,y,zoom){
-  #タイルの左下、右上の　WEBメルカトル座標とm/pixcelを返す
+  #タイル座標からタイルの左下、右上の　WEBメルカトル座標とm/pixcelを返す
   A<-20037508.342789244
   L<- 2*A/2^zoom
   x0<-L*x-A
@@ -134,16 +134,16 @@ getMVT<-function(baseurl,ext,lon0,lat0,lon1,lat1,zoom,combine=TRUE){
 # example 
 #------------------------------------------------------
 
-#植生
+#植生ベクトルデータ
 baseurl<-"http://map.ecoris.info/mvt-tiles/veg/"
 ext<-".pbf"
 veg<-getMVT(baseurl,ext,140.74963,37.85554,140.75963,37.85554,14)
 veg$vegPolygon["HANREI_N"] %>% plot
 merged_veg<-veg$vegPolygon %>% group_by(HANREI_N) %>% summarise_all(first)
 
-#OSM tiled by hfu
+#OSMベクトルデータ tiled by hfu
 baseurl<-"https://hfu.github.io/jp1710_"
 ext<-".mvt"
-osm<-getMVT(baseurl,ext,139.767052,35.68054,139.797052,35.68054,13)
-osm$transportationLineString["class"] %>% plot
-osm$buildingPolygon["id"] %>% plot(add=T,col="blue")
+osm<-getMVT(baseurl,ext,139.767052,35.65054,139.797052,35.68054,13)
+osm$transportationLineString["class"] %>% plot(key.size = lcm(4),main="Rでバイナリベクトルタイル")
+osm$buildingPolygon["id"] %>% plot(add=T,col="black",border=0)
